@@ -15,11 +15,14 @@ const Students = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [editingStudent, setEditingStudent] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
   // Custom states for the new dropdowns
   const [selectedCollege, setSelectedCollege] = useState('');
+  const [selectedEditCollege, setSelectedEditCollege] = useState('');
 
   // Mapping Colleges to backend Department IDs
   const colleges = {
@@ -40,6 +43,13 @@ const Students = () => {
   // For Enroll
   const [enrollData, setEnrollData] = useState({
     courseId: ''
+  });
+
+  // For Edit
+  const [editData, setEditData] = useState({
+    fullName: '',
+    major: '',
+    departmentId: ''
   });
 
   const fetchStudents = async () => {
@@ -109,6 +119,53 @@ const Students = () => {
       fetchStudents();
     } catch (err) {
       alert('Failed to register student. Check constraints (e.g. password rules).');
+    }
+  };
+
+  const openEditStudentModal = (student) => {
+    setEditingStudent(student);
+    setEditData({ 
+      fullName: student.fullName || '', 
+      major: student.major || '', 
+      departmentId: student.departmentId || '' 
+    });
+    const collegeEntry = Object.entries(colleges).find(([name, data]) => data.id === student.departmentId);
+    setSelectedEditCollege(collegeEntry ? collegeEntry[0] : '');
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditStudentModal = () => {
+    setIsEditModalOpen(false);
+    setEditingStudent(null);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditCollegeChange = (e) => {
+    const collegeName = e.target.value;
+    setSelectedEditCollege(collegeName);
+    if (collegeName && colleges[collegeName]) {
+      setEditData(prev => ({ 
+        ...prev, 
+        departmentId: colleges[collegeName].id,
+        major: ''
+      }));
+    } else {
+      setEditData(prev => ({ ...prev, departmentId: '', major: '' }));
+    }
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/students/${editingStudent.id}`, editData);
+      closeEditStudentModal();
+      fetchStudents();
+    } catch (err) {
+      alert('Failed to update student details.');
     }
   };
 
@@ -197,7 +254,10 @@ const Students = () => {
                   </td>
                   <td>
                     {isAdmin && (
-                      <button className="btn btn-primary" onClick={() => openEnrollModal(student)}>Enroll in Course</button>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button className="btn btn-secondary" onClick={() => openEditStudentModal(student)}>Edit</button>
+                        <button className="btn btn-primary" onClick={() => openEnrollModal(student)}>Enroll in Course</button>
+                      </div>
                     )}
                   </td>
                 </tr>
@@ -319,6 +379,59 @@ const Students = () => {
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                 <button type="submit" className="btn btn-primary">Enroll</button>
                 <button type="button" className="btn" onClick={closeEnrollModal} style={{ backgroundColor: '#e2e8f0', color: '#4a5568' }}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Student Modal */}
+      {isEditModalOpen && isAdmin && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Edit Student: {editingStudent?.fullName}</h3>
+            <form onSubmit={handleEditSubmit}>
+              <div className="form-group">
+                <label>Full Name</label>
+                <input type="text" name="fullName" className="form-control" value={editData.fullName} onChange={handleEditChange} required />
+              </div>
+
+              <div className="form-group">
+                <label>College / Faculty</label>
+                <select 
+                  className="form-control" 
+                  value={selectedEditCollege} 
+                  onChange={handleEditCollegeChange}
+                  required
+                >
+                  <option value="" disabled>Select College</option>
+                  {Object.keys(colleges).map(college => (
+                    <option key={college} value={college}>{college}</option>
+                  ))}
+                </select>
+              </div>
+
+              {selectedEditCollege && (
+                <div className="form-group">
+                  <label>Major</label>
+                  <select 
+                    name="major"
+                    className="form-control" 
+                    value={editData.major} 
+                    onChange={handleEditChange}
+                    required
+                  >
+                    <option value="" disabled>Select Major</option>
+                    {colleges[selectedEditCollege].majors.map(major => (
+                      <option key={major} value={major}>{major}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                <button type="submit" className="btn btn-primary">Save Changes</button>
+                <button type="button" className="btn" onClick={closeEditStudentModal} style={{ backgroundColor: '#e2e8f0', color: '#4a5568' }}>Cancel</button>
               </div>
             </form>
           </div>

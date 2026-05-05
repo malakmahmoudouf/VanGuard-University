@@ -10,11 +10,28 @@ public class InstructorReadDto
     public string? Bio { get; set; }
     public string? OfficeLocation { get; set; }
     public string? DepartmentName { get; set; }
+    public string? DepartmentId { get; set; }
     public List<CourseReadDto> Courses { get; set; } = new();
 }
 
 public class InstructorProfileUpdateDto
 {
+    [MaxLength(1000)]
+    public string Bio { get; set; } = string.Empty;
+
+    [MaxLength(100)]
+    public string OfficeLocation { get; set; } = string.Empty;
+}
+
+public class InstructorUpdateAdminDto
+{
+    [Required]
+    [MaxLength(100)]
+    public string FullName { get; set; } = string.Empty;
+
+    [Required]
+    public string DepartmentId { get; set; } = string.Empty;
+
     [MaxLength(1000)]
     public string Bio { get; set; } = string.Empty;
 

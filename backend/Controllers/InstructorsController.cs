@@ -46,4 +46,22 @@ public class InstructorsController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpPut("{id}/admin")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateInstructorAdmin(string id, [FromBody] InstructorUpdateAdminDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        try
+        {
+            var result = await _instructorService.UpdateInstructorAdminAsync(id, dto);
+            if (result == null) return NotFound(new { Message = "Instructor not found." });
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
 }

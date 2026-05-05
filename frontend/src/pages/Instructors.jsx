@@ -23,8 +23,10 @@ const Instructors = () => {
     departmentId: ''
   });
 
-  // For Edit (Profile)
+  // For Edit (Profile/Admin)
   const [profileData, setProfileData] = useState({
+    fullName: '',
+    departmentId: '',
     bio: '',
     officeLocation: ''
   });
@@ -65,6 +67,8 @@ const Instructors = () => {
   const openEditModal = (instructor) => {
     setEditingInstructor(instructor);
     setProfileData({ 
+      fullName: instructor.fullName || '',
+      departmentId: instructor.departmentId || '',
       bio: instructor.bio || '', 
       officeLocation: instructor.officeLocation || ''
     });
@@ -80,8 +84,8 @@ const Instructors = () => {
     e.preventDefault();
     try {
       if (editingInstructor) {
-        // Update Profile
-        await api.put(`/instructors/${editingInstructor.id}/profile`, profileData);
+        // Update Details (Admin)
+        await api.put(`/instructors/${editingInstructor.id}/admin`, profileData);
       } else {
         // Add new (Register)
         await authService.register({
@@ -157,7 +161,7 @@ const Instructors = () => {
                   </td>
                   {isAdmin && (
                     <td>
-                      <button className="btn btn-primary" onClick={() => openEditModal(instructor)}>Edit Profile</button>
+                      <button className="btn btn-primary" onClick={() => openEditModal(instructor)}>Edit Details</button>
                     </td>
                   )}
                 </tr>
@@ -218,6 +222,14 @@ const Instructors = () => {
                 </>
               ) : (
                 <>
+                  <div className="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="fullName" className="form-control" value={profileData.fullName} onChange={handleProfileChange} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Department ID (e.g. D-CS)</label>
+                    <input type="text" name="departmentId" className="form-control" value={profileData.departmentId} onChange={handleProfileChange} required />
+                  </div>
                   <div className="form-group">
                     <label>Bio</label>
                     <input type="text" name="bio" className="form-control" value={profileData.bio} onChange={handleProfileChange} />

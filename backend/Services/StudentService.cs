@@ -26,6 +26,7 @@ public class StudentService : IStudentService
                 FullName = s.FullName,
                 Major = s.Major,
                 DepartmentName = s.Department != null ? s.Department.Name : null,
+                DepartmentId = s.DepartmentId,
                 Enrollments = s.Enrollments.Select(e => new EnrollmentReadDto
                 {
                     CourseId = e.CourseId,
@@ -49,6 +50,7 @@ public class StudentService : IStudentService
                 FullName = s.FullName,
                 Major = s.Major,
                 DepartmentName = s.Department != null ? s.Department.Name : null,
+                DepartmentId = s.DepartmentId,
                 Enrollments = s.Enrollments.Select(e => new EnrollmentReadDto
                 {
                     CourseId = e.CourseId,
@@ -82,5 +84,21 @@ public class StudentService : IStudentService
         await _context.SaveChangesAsync();
 
         return "Success";
+    }
+
+    public async Task<StudentReadDto?> UpdateStudentAsync(string id, StudentUpdateDto dto)
+    {
+        var student = await _context.Students.FindAsync(id);
+        if (student == null) return null;
+
+        var departmentExists = await _context.Departments.AnyAsync(d => d.Id == dto.DepartmentId);
+        if (!departmentExists) throw new ArgumentException("Invalid Department ID.");
+
+        student.FullName = dto.FullName;
+        student.Major = dto.Major;
+        student.DepartmentId = dto.DepartmentId;
+
+        await _context.SaveChangesAsync();
+        return await GetStudentByIdAsync(id);
     }
 }

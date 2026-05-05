@@ -49,4 +49,22 @@ public class StudentsController : ControllerBase
 
         return Ok(new { Message = "Enrolled successfully." });
     }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateStudent(string id, [FromBody] StudentUpdateDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        try
+        {
+            var result = await _studentService.UpdateStudentAsync(id, dto);
+            if (result == null) return NotFound(new { Message = "Student not found." });
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
 }
