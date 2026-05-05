@@ -1,0 +1,51 @@
+@CourseManagementSystem_HostAddress = http://localhost:5249
+
+### Register an Admin
+POST {{CourseManagementSystem_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "AdminUser",
+  "password": "Password123!",
+  "role": "Admin",
+  "fullName": "System Administrator"
+}
+
+###
+
+### Login and get Token
+POST {{CourseManagementSystem_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "AdminUser",
+  "password": "Password123!"
+}
+
+###
+
+### Get all Courses (No authentication needed)
+GET {{CourseManagementSystem_HostAddress}}/api/courses
+Accept: application/json
+
+###
+
+### Create a Course (Requires Admin/Instructor Token)
+# 1. First run the Login request
+# 2. Paste the 'token' from the response into the placeholder below
+@token = YOUR_TOKEN_HERE
+
+POST {{CourseManagementSystem_HostAddress}}/api/courses
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "id": "CC556",
+  "title": "Introduction to Computer Science",
+  "description": "Learn the basics of programming",
+  "instructorId": 1,
+  "enrollmentCount": 30
+  
+}
+
+###
