@@ -47,7 +47,7 @@ const Home = () => {
                   </Link>
                 </>
               )}
-              
+
               {user?.role === 'Instructor' && (
                 <>
                   <Link to="/instructor-dashboard" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -55,17 +55,29 @@ const Home = () => {
                     <p style={{ color: 'var(--text-muted)' }}>View your assigned courses and schedules.</p>
                   </Link>
                   <Link to="/students" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>Students</h3>
-                    <p style={{ color: 'var(--text-muted)' }}>Access the student directory.</p>
+                    <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>Students Directory</h3>
+                    <p style={{ color: 'var(--text-muted)' }}>Access the student directory to view profiles.</p>
                   </Link>
                 </>
               )}
 
               {user?.role === 'Student' && (
                 <>
-                  <Link to="/student-dashboard" className="card" style={{ textDecoration: 'none', color: 'inherit', borderLeft: '4px solid var(--secondary)' }}>
-                    <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>My Portal</h3>
-                    <p style={{ color: 'var(--text-muted)' }}>View your schedule, academic status, and enroll in new courses.</p>
+                  <Link to="/student-dashboard" state={{ tab: 'profile' }} className="card" style={{ textDecoration: 'none', color: 'inherit', borderLeft: '4px solid var(--secondary)' }}>
+                    <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>My Profile</h3>
+                    <p style={{ color: 'var(--text-muted)' }}>View your personal details and academic status.</p>
+                  </Link>
+                  <Link to="/student-dashboard" state={{ tab: 'current' }} className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>Current Classes</h3>
+                    <p style={{ color: 'var(--text-muted)' }}>Check your in-progress schedule.</p>
+                  </Link>
+                  <Link to="/student-dashboard" state={{ tab: 'grades' }} className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>Academic Record</h3>
+                    <p style={{ color: 'var(--text-muted)' }}>View your completed courses and final grades.</p>
+                  </Link>
+                  <Link to="/student-dashboard" state={{ tab: 'catalog' }} className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <h3 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>Course Catalog</h3>
+                    <p style={{ color: 'var(--text-muted)' }}>Browse available courses and enroll for the semester.</p>
                   </Link>
                 </>
               )}

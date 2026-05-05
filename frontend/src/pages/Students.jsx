@@ -196,7 +196,9 @@ const Students = () => {
                       : 'None'}
                   </td>
                   <td>
-                    <button className="btn btn-primary" onClick={() => openEnrollModal(student)}>Enroll in Course</button>
+                    {isAdmin && (
+                      <button className="btn btn-primary" onClick={() => openEnrollModal(student)}>Enroll in Course</button>
+                    )}
                   </td>
                 </tr>
               ))

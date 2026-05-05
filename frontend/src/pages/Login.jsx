@@ -24,12 +24,7 @@ const Login = () => {
 
     try {
       await authService.login(formData.username, formData.password);
-      
-      const user = authService.getUser();
-      if (user?.role === 'Admin') navigate('/courses');
-      else if (user?.role === 'Instructor') navigate('/instructor-dashboard');
-      else if (user?.role === 'Student') navigate('/student-dashboard');
-      else navigate('/');
+      navigate('/');
       
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');

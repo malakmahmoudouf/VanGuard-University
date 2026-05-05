@@ -75,15 +75,15 @@ const Register = () => {
       return "Password does not meet all requirements.";
     }
 
-    if (formData.role !== 'Admin' && !formData.fullName) {
+    if (!formData.fullName) {
       return "Full Name is required.";
     }
 
-    if (formData.role !== 'Admin' && !selectedCollege) {
+    if (!selectedCollege) {
       return "Please select a College / Faculty.";
     }
 
-    if (formData.role === 'Student' && !formData.major) {
+    if (!formData.major) {
       return "Please select a Major.";
     }
 
@@ -127,19 +127,6 @@ const Register = () => {
           {success && <div style={{ color: 'var(--secondary)', marginBottom: '1rem', fontWeight: '600', textAlign: 'center', background: '#fdfbf7', padding: '0.8rem', borderRadius: '8px', border: '1px solid #c5a365' }}>{success}</div>}
           
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Account Type</label>
-              <select 
-                name="role" 
-                className="form-control" 
-                value={formData.role} 
-                onChange={handleChange}
-              >
-                <option value="Student">Student</option>
-                <option value="Instructor">Instructor</option>
-                <option value="Admin">Admin</option>
-              </select>
-            </div>
 
             <div className="form-group">
               <label>University ID (Username)</label>
@@ -204,37 +191,33 @@ const Register = () => {
               </ul>
             </div>
 
-            {(formData.role === 'Student' || formData.role === 'Instructor') && (
-              <div className="form-group">
-                <label>Full Name</label>
-                <input 
-                  type="text" 
-                  name="fullName" 
-                  className="form-control" 
-                  value={formData.fullName} 
-                  onChange={handleChange} 
-                  placeholder="e.g. John Doe"
-                />
-              </div>
-            )}
+            <div className="form-group">
+              <label>Full Name</label>
+              <input 
+                type="text" 
+                name="fullName" 
+                className="form-control" 
+                value={formData.fullName} 
+                onChange={handleChange} 
+                placeholder="e.g. John Doe"
+              />
+            </div>
 
-            {(formData.role === 'Student' || formData.role === 'Instructor') && (
-              <div className="form-group">
-                <label>College / Faculty</label>
-                <select 
-                  className="form-control" 
-                  value={selectedCollege} 
-                  onChange={handleCollegeChange}
-                >
-                  <option value="" disabled>Select your College</option>
-                  {Object.keys(colleges).map(college => (
-                    <option key={college} value={college}>{college}</option>
-                  ))}
-                </select>
-              </div>
-            )}
+            <div className="form-group">
+              <label>College / Faculty</label>
+              <select 
+                className="form-control" 
+                value={selectedCollege} 
+                onChange={handleCollegeChange}
+              >
+                <option value="" disabled>Select your College</option>
+                {Object.keys(colleges).map(college => (
+                  <option key={college} value={college}>{college}</option>
+                ))}
+              </select>
+            </div>
 
-            {formData.role === 'Student' && selectedCollege && (
+            {selectedCollege && (
               <div className="form-group">
                 <label>Major</label>
                 <select 
